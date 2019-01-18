@@ -197,7 +197,7 @@ fahrenheit_conversion_plot <- function(tempF, to = "celsius") {
             'celsius' and 'kelvin' (not case sensitive).")
     return()
   }
-  plot(temp_out, type="l")
+  plot(temp_out)
 }
 
 input_temp <- 50:90
@@ -205,4 +205,4 @@ input_temp2 <- as.numeric(input_temp)
 fahrenheit_conversion_plot(input_temp2) #the function can operate on a vector
 
 
-
+ 

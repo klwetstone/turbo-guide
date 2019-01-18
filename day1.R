@@ -90,7 +90,7 @@ plot(row_max) #girl you ugly
 plot(row_max, type = "l") #default type is p for points
 plot(col_sd, type="l")
 
-##### ExerciseB: make a plot of mean value across patients 1-10 for all columns #####
+# ExerciseB: make a plot of mean value across patients 1-10 for all columns
 #means of each row
 row_means1to10 <- apply(dat[1:10], 1, mean)
 plot(row_means1to10, type="l")
@@ -101,10 +101,108 @@ plot(row_means1to10, type="l")
 plot(apply(dat[1:10, ], 2, mean), type="l", ylab = "Mean", 
      xlab = "Days", main = "Mean inflammation across days") 
 
+##### 6. WRITING FUNCTIONS ####
 
+fahrenheit_to_kelvin <- function(tempF) {
+  tempK <- (tempF - 32) * (5/9) + 273.15
+  return(tempK)
+ }
+(tempK<- fahrenheit_to_kelvin(51))
 
+divide_by_input <- function(input) {
+  input / 5
+}
+divide_by_input(5) 
+#if you don't assign, whatever returns in the last line is returned (but didn't work before
+#because we assigned to a variable rather than returning)
 
+fahrenheit_to_kelvin2 <- function(tempF) {
+  (tempF - 32) * (5/9) + 273.15 #in general, assigning to variables keeps things organized
+}
+fahrenheit_to_kelvin2(51) #same output as before
+rm(fahrenheit_to_kelvin2)
 
+fahrenheit_to_celsius <- function(tempF) {
+  tempC <- (tempF - 32) * (5/9)
+  return(tempC)
+}
+fahrenheit_to_celsius(51)
+
+fahrenheit_to_kelvin3 <- function(tempF) {
+  tempK <- fahrenheit_to_celsius(tempF) + 273.15
+  return(tempK)
+}
+
+# check outputs match
+all.equal(fahrenheit_to_kelvin(51), fahrenheit_to_kelvin3(51)) #returns TRUE
+
+# ExerciseC: write a function that computes the minimum and maximum
+#     for a numeric vector input, and then returns the sum of the two
+#     (HINT: sum() computes sum of two values)
+col_min #test of column min
+minmaxsum <- function(vector, scale) {
+  sumofminandmax <- sum(min(vector), max(vector))
+  return(sumofminandmax)
+}
+minmaxsum(col_min) #returns 5. min is 0, max is 5
+
+# functions with multiple arguments and default values
+
+fahrenheit_conversion <- function(tempF, to = "celsius") {
+  #check classes of tempF and to
+  stopifnot(class(tempF) == "numeric")
+  stopifnot(class(to) == "character")
+  
+  if(tolower(to) == "celsius") {
+    temp_out <- fahrenheit_to_celsius(tempF)
+  } else if (tolower(to) == "kelvin") {
+    temp_out = fahrenheit_to_kelvin(tempF)
+  } else {
+    message("Unexpected input for argument 2. Acceptable arguments are
+  'celsius' and 'kelvin' (not case sensitive).")
+    return()
+  }
+  return(temp_out)
+}
+all.equal(fahrenheit_conversion(51, "celsius"), fahrenheit_to_celsius(51))
+all.equal(fahrenheit_conversion(51, "Kelvin"), fahrenheit_to_kelvin(51)) #both return TRUE
+fahrenheit_conversion(51, "fahrenheit")
+#added 'celsius' as the default value for "to"
+
+# Exercise D: in the case that our new function has a sensible input to argument "to",
+# create a plot of the converted temperature as output
+input_temp <- 50:90
+
+converted_temps = 0
+for (j in input_temp) {
+  temp_out <- fahrenheit_conversion(as.numeric(j), "celsius")
+  index = j - 49
+  converted_temps[index] <- temp_out
+}
+
+plot(converted_temps, type="l", 
+     xlab = "Index, 50 to 90", ylab = "Celsius")
+
+fahrenheit_conversion_plot <- function(tempF, to = "celsius") {
+  #check classes of tempF and to
+  stopifnot(class(tempF) == "numeric")
+  stopifnot(class(to) == "character")
+  
+  if(tolower(to) == "celsius") {
+    temp_out <- fahrenheit_to_celsius(tempF)
+  } else if (tolower(to) == "kelvin") {
+    temp_out = fahrenheit_to_kelvin(tempF)
+  } else {
+    message("Unexpected input for argument 2. Acceptable arguments are
+            'celsius' and 'kelvin' (not case sensitive).")
+    return()
+  }
+  plot(temp_out, type="l")
+}
+
+input_temp <- 50:90
+input_temp2 <- as.numeric(input_temp)
+fahrenheit_conversion_plot(input_temp2) #the function can operate on a vector
 
 
 
